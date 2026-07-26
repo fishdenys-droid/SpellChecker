@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SpellChecker.Tests/SpellChecker.Tests.csproj" Id="f125a2a6-ee60-44a1-82b1-43edb0c4c535" />
+  <Project Path="SpellChecker/SpellChecker.csproj" />
+</Solution>

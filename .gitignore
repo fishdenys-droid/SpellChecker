@@ -1,0 +1,22 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+
+# Build artifacts
+*.dll
+*.pdb
+
+# Test results
+TestResults/
+*.trx
+
+# IDEs
+.vscode/
+.idea/
