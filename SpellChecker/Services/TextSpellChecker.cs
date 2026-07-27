@@ -6,13 +6,13 @@ using System.Text;
 namespace SpellChecker.Services
 {
     public class TextSpellChecker : ITextSpellChecker
-    {
-        private readonly TextTokenizer _tokenizer;
+    {        
         private readonly ISpellCheckerService _spellChecker;
+        private readonly ITextTokenizer _tokenizer;
 
 
         public TextSpellChecker(
-            TextTokenizer tokenizer,
+            ITextTokenizer tokenizer,
             ISpellCheckerService spellChecker)
         {
             _tokenizer = tokenizer;

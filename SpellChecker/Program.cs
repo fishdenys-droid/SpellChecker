@@ -105,7 +105,8 @@ static ServiceProvider ConfigureServices(
                           OutputWriter>();
 
 
-    services.AddSingleton<TextTokenizer>();
+    services.AddSingleton<ITextTokenizer,
+                          ITextTokenizer>();
 
 
     services.AddSingleton<IEditDistanceChecker,

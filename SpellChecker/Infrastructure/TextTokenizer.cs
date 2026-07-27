@@ -1,9 +1,10 @@
-﻿using SpellChecker.Models;
+﻿using SpellChecker.Interfaces;
+using SpellChecker.Models;
 using System.Text;
 
 namespace SpellChecker.Infrastructure
 {
-    public class TextTokenizer
+    public class TextTokenizer: ITextTokenizer
     {
         public IEnumerable<TextToken> Tokenize(string text)
         {

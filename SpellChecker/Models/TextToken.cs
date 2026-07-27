@@ -1,14 +1,17 @@
-﻿
-namespace SpellChecker.Models
+﻿namespace SpellChecker.Models;
+
+public class TextToken
 {
-    public enum TokenType
+    public TokenType Type { get; }
+
+    public string Value { get; }
+
+
+    public TextToken(
+        TokenType type,
+        string value)
     {
-        Word,
-        Whitespace
+        Type = type;
+        Value = value;
     }
-
-
-    public record TextToken(
-        TokenType Type,
-        string Value);
 }
