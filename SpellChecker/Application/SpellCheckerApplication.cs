@@ -8,11 +8,15 @@ public class SpellCheckerApplication
 {
     private readonly ITextSpellChecker _spellChecker;
 
+    private readonly IOutputWriter _outputWriter;
+
 
     public SpellCheckerApplication(
-        ITextSpellChecker spellChecker)
+        ITextSpellChecker spellChecker,
+        IOutputWriter outputWriter)
     {
         _spellChecker = spellChecker;
+        _outputWriter = outputWriter;
     }
 
 
@@ -25,14 +29,12 @@ public class SpellCheckerApplication
 
         foreach (var line in inputData.TextLines)
         {
-            result.Append(
-        _spellChecker.CheckText(line));
-
-            result.AppendLine();
+            result.AppendLine(
+                _spellChecker.CheckText(line));
         }
 
 
-        File.WriteAllText(
+        _outputWriter.Write(
             outputFile,
             result.ToString());
     }

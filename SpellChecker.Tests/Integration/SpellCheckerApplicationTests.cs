@@ -304,6 +304,7 @@ public class SpellCheckerApplicationTests
             spellChecker);
 
         return new SpellCheckerApplication(
-            textChecker);
+            textChecker,
+            new OutputWriter());
     }
 }

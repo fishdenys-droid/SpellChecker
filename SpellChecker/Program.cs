@@ -1,62 +1,127 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SpellChecker.Application;
+using SpellChecker.Common;
 using SpellChecker.Infrastructure;
 using SpellChecker.Interfaces;
+using SpellChecker.Models;
 using SpellChecker.Services;
 
 
-if (args.Length != 2)
+try
 {
-    Console.WriteLine(
-        "Usage: SpellChecker <input-file> <output-file>");
+    if (args.Length != 2)
+    {
+        Console.Error.WriteLine(
+            "Usage: SpellChecker <input-file> <output-file>");
 
-    return;
+        return ExitCodes.InvalidArguments;
+    }
+
+
+    var inputFile = args[0];
+
+    var outputFile = args[1];
+
+
+    var inputReader = new InputReader();
+
+
+    var inputData =
+        inputReader.Read(inputFile);
+
+
+    var serviceProvider =
+        ConfigureServices(inputData);
+
+
+    var application =
+        serviceProvider
+            .GetRequiredService<SpellCheckerApplication>();
+
+
+    application.Run(
+        inputData,
+        outputFile);
+
+
+    return ExitCodes.Success;
+}
+catch (InvalidInputFormatException ex)
+{
+    Console.Error.WriteLine(ex.Message);
+
+    return ExitCodes.InvalidInputFormat;
+}
+catch (FileNotFoundException ex)
+{
+    Console.Error.WriteLine(ex.Message);
+
+    return ExitCodes.GeneralError;
+}
+catch (DirectoryNotFoundException ex)
+{
+    Console.Error.WriteLine(ex.Message);
+
+    return ExitCodes.GeneralError;
+}
+catch (UnauthorizedAccessException ex)
+{
+    Console.Error.WriteLine(ex.Message);
+
+    return ExitCodes.GeneralError;
+}
+catch (IOException ex)
+{
+    Console.Error.WriteLine(ex.Message);
+
+    return ExitCodes.GeneralError;
+}
+catch (Exception ex)
+{
+    Console.Error.WriteLine(
+        $"Unexpected error: {ex.Message}");
+
+    return ExitCodes.GeneralError;
 }
 
 
-var inputFile = args[0];
-var outputFile = args[1];
+
+static ServiceProvider ConfigureServices(
+    InputData inputData)
+{
+    var dictionary =
+        new DictionaryIndex(
+            inputData.DictionaryWords);
 
 
-var inputReader = new InputReader();
-
-var inputData =
-    inputReader.Read(inputFile);
+    var services =
+        new ServiceCollection();
 
 
-var dictionary =
-    new DictionaryIndex(
-        inputData.DictionaryWords);
+    services.AddSingleton(dictionary);
 
 
-var services = new ServiceCollection();
+    services.AddSingleton<IOutputWriter,
+                          OutputWriter>();
 
 
-services.AddSingleton(dictionary);
-
-services.AddSingleton<TextTokenizer>();
-
-services.AddSingleton<IEditDistanceChecker,
-                      EditDistanceChecker>();
-
-services.AddSingleton<ISpellCheckerService,
-                      SpellCheckerService>();
-
-services.AddSingleton<ITextSpellChecker,
-                      TextSpellChecker>();
-
-services.AddSingleton<SpellCheckerApplication>();
+    services.AddSingleton<TextTokenizer>();
 
 
-using var serviceProvider =
-    services.BuildServiceProvider();
+    services.AddSingleton<IEditDistanceChecker,
+                          EditDistanceChecker>();
 
 
-var application =
-    serviceProvider
-        .GetRequiredService<SpellCheckerApplication>();
+    services.AddSingleton<ISpellCheckerService,
+                          SpellCheckerService>();
 
 
-application.Run(
-    inputData,
-    outputFile);
+    services.AddSingleton<ITextSpellChecker,
+                          TextSpellChecker>();
+
+
+    services.AddSingleton<SpellCheckerApplication>();
+
+
+    return services.BuildServiceProvider();
+}
